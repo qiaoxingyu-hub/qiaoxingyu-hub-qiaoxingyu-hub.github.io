@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>谬误侦探 — Fallacy Detective</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ========== TITLE ========== -->
+    <section id="screen-title" class="screen active">
+      <div class="title-content">
+        <span class="title-badge">BETA</span>
+        <h1 class="title-main">谬误侦探</h1>
+        <p class="title-sub">识别逻辑谬误 · 觉察认知偏差</p>
+        <div class="title-actions">
+          <button id="btn-start" class="btn-primary" data-action="start">开始新游戏</button>
+          <button id="btn-continue" class="btn-ghost hidden" data-action="continue">继续游戏</button>
+          <button class="btn-ghost" data-action="showTutorial">怎么玩？</button>
+        </div>
+      </div>
+      <footer class="title-footer">
+        <span>10 个真实场景 · 双维度训练</span>
+      </footer>
+    </section>
+
+    <!-- ========== CASE INTRO ========== -->
+    <section id="screen-intro" class="screen">
+      <div class="screen-header">
+        <button class="btn-back" data-action="backToTitle">← 返回</button>
+        <div class="progress-dots" id="progress-dots"></div>
+      </div>
+      <div class="intro-card card">
+        <div class="intro-meta">
+          <span class="tag tag-difficulty" id="tag-difficulty"></span>
+          <span class="tag tag-category" id="tag-category"></span>
+        </div>
+        <p class="intro-context" id="intro-context"></p>
+        <blockquote class="intro-content" id="intro-content"></blockquote>
+        <button class="btn-primary btn-full" data-action="beginAnalysis">开始分析</button>
+      </div>
+    </section>
+
+    <!-- ========== FALLACY HUNT ========== -->
+    <section id="screen-fallacy" class="screen">
+      <div class="screen-header">
+        <span class="screen-step">第 1 步 / 2</span>
+        <h2 class="screen-title-text">找出逻辑谬误</h2>
+      </div>
+      <div class="content-scroll">
+        <div class="case-reread card" id="case-reread"></div>
+        <div class="fallacy-options" id="fallacy-options"></div>
+      </div>
+      <div class="screen-footer">
+        <div class="selection-count" id="selection-count">已选 0 项</div>
+        <button class="btn-primary" id="btn-fallacy-submit" data-action="submitFallacies" disabled>确认提交</button>
+      </div>
+    </section>
+
+    <!-- ========== BIAS CHECK ========== -->
+    <section id="screen-bias" class="screen">
+      <div class="screen-header">
+        <span class="screen-step">第 2 步 / 2</span>
+        <h2 class="screen-title-text">觉察认知偏差</h2>
+      </div>
+      <div class="content-scroll">
+        <div class="bias-question-card card">
+          <span class="bias-icon">🧠</span>
+          <p class="bias-question" id="bias-question"></p>
+        </div>
+        <div class="bias-options" id="bias-options"></div>
+        <div class="bias-feedback hidden" id="bias-feedback"></div>
+      </div>
+      <div class="screen-footer">
+        <button class="btn-primary" id="btn-bias-submit" data-action="submitBias" disabled>确认</button>
+      </div>
+    </section>
+
+    <!-- ========== VERDICT ========== -->
+    <section id="screen-verdict" class="screen">
+      <div class="screen-header">
+        <h2 class="screen-title-text">裁决书</h2>
+      </div>
+      <div class="content-scroll">
+        <div class="verdict-score card" id="verdict-score">
+          <div class="score-main">
+            <span class="score-number" id="score-number">0</span>
+            <span class="score-unit">分</span>
+          </div>
+          <div class="score-stars" id="score-stars"></div>
+          <div class="score-breakdown" id="score-breakdown"></div>
+        </div>
+        <div class="verdict-learn" id="verdict-learn"></div>
+        <div class="verdict-tip card" id="verdict-tip"></div>
+      </div>
+      <div class="screen-footer">
+        <button class="btn-primary" id="btn-next" data-action="nextScenario">下一关</button>
+        <button class="btn-ghost" data-action="showProgress">查看总览</button>
+      </div>
+    </section>
+
+    <!-- ========== PROGRESS OVERLAY ========== -->
+    <section id="screen-progress" class="screen overlay">
+      <div class="overlay-backdrop" data-action="hideProgress"></div>
+      <div class="overlay-panel card">
+        <div class="screen-header">
+          <h2 class="screen-title-text">训练总览</h2>
+          <button class="btn-close" data-action="hideProgress">✕</button>
+        </div>
+        <div class="content-scroll">
+          <div class="progress-summary" id="progress-summary"></div>
+          <div class="progress-list" id="progress-list"></div>
+        </div>
+        <div class="screen-footer">
+          <button class="btn-ghost btn-full" data-action="resetProgress">重置进度</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TUTORIAL OVERLAY ========== -->
+    <section id="screen-tutorial" class="screen overlay">
+      <div class="overlay-backdrop" data-action="hideTutorial"></div>
+      <div class="overlay-panel card">
+        <div class="screen-header">
+          <h2 class="screen-title-text">游戏说明</h2>
+          <button class="btn-close" data-action="hideTutorial">✕</button>
+        </div>
+        <div class="content-scroll">
+          <div class="tutorial-section">
+            <h3 class="tutorial-heading">🎯 这是什么游戏？</h3>
+            <p class="tutorial-text">谬误侦探是一个<strong>双维度批判性思维训练</strong>游戏。每一关你会面对一个真实的生活场景（朋友圈帖、广告、职场对话……），你需要完成两项挑战：</p>
+            <div class="tutorial-steps">
+              <div class="tutorial-step"><span class="tutorial-step-num">1</span><span>找出场景中隐藏的<strong>逻辑谬误</strong>（错误的推理方式）</span></div>
+              <div class="tutorial-step"><span class="tutorial-step-num">2</span><span>觉察你自己在阅读时容易陷入的<strong>认知偏差</strong>（思维捷径）</span></div>
+            </div>
+          </div>
+          <div class="tutorial-section">
+            <h3 class="tutorial-heading">❌ 什么是逻辑谬误？</h3>
+            <p class="tutorial-text">逻辑谬误是<strong>推理中的错误模式</strong>。它们听起来有道理，实际上经不起推敲。</p>
+            <div class="tutorial-example">
+              <div class="tutorial-example-bad">"协和专家说这个保健品有效，所以它一定有效！"</div>
+              <div class="tutorial-example-arrow">↓</div>
+              <div class="tutorial-example-good">这是<strong>「诉诸权威」</strong>——专家的身份不能替代科学证据。一位专家的个人观点 ≠ 医学共识。</div>
+            </div>
+          </div>
+          <div class="tutorial-section">
+            <h3 class="tutorial-heading">🧠 什么是认知偏差？</h3>
+            <p class="tutorial-text">认知偏差是我们大脑<strong>走捷径时犯的系统性错误</strong>。它不是别人骗你，而是<strong>你自己骗自己</strong>。</p>
+            <div class="tutorial-example">
+              <div class="tutorial-example-bad">如果你本来就相信"天然的东西好"，你会更容易轻信"专家说柠檬水抗癌"——</div>
+              <div class="tutorial-example-arrow">↓</div>
+              <div class="tutorial-example-good">这就是<strong>「确认偏误」</strong>：倾向于接受符合已有观念的信息，忽略相反的证据。</div>
+            </div>
+          </div>
+          <div class="tutorial-section">
+            <h3 class="tutorial-heading">📊 怎么计分？</h3>
+            <div class="tutorial-score-rules">
+              <div class="tutorial-score-row"><span>正确找出一个谬误</span><span class="tutorial-score-val correct">+10 分</span></div>
+              <div class="tutorial-score-row"><span>错误勾选一个</span><span class="tutorial-score-val incorrect">−5 分</span></div>
+              <div class="tutorial-score-row"><span>偏差问题答对</span><span class="tutorial-score-val bias">+20 分</span></div>
+              <div class="tutorial-score-row"><span>每关评分</span><span>≥80% ★★★ / ≥50% ★★ / ＜50% ★</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-footer">
+          <button class="btn-primary btn-full" data-action="hideTutorial">知道了，开始吧</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== REVIEW SCREEN ========== -->
+    <section id="screen-review" class="screen">
+      <div class="screen-header">
+        <h2 class="screen-title-text">训练报告</h2>
+      </div>
+      <div class="content-scroll">
+        <div class="review-rank card" id="review-rank"></div>
+        <div class="review-stats" id="review-stats"></div>
+        <div class="review-section">
+          <h3 class="review-section-title">❌ 谬误掌握度</h3>
+          <div class="review-table" id="review-fallacy-table"></div>
+        </div>
+        <div class="review-section">
+          <h3 class="review-section-title">🧠 偏差觉察</h3>
+          <div class="review-table" id="review-bias-table"></div>
+        </div>
+      </div>
+      <div class="screen-footer">
+        <button class="btn-primary" data-action="shareResult">📋 复制成绩</button>
+        <button class="btn-ghost" data-action="restartGame">重新挑战</button>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
